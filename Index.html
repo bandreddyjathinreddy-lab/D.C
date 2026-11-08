@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Diwali Impact Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Mukta:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#24102f;--bg2:#321545;--panel:#3b1b50;--ink:#fff1d6;--mute:#c3a9cf;--line:#5d3a73;--gold:#ffb627;--rose:#ff5d8f;--teal:#2ed3b7;--sky:#7fb8ff;--on-gold:#2a1200;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#fff4dc;--bg2:#ffe9bd;--panel:#fffaf0;--ink:#2e1240;--mute:#7a5a8c;--line:#e8cf9f;--gold:#d97a00;--rose:#c4245c;--teal:#0b8c78;--sky:#2d6bc4;--on-gold:#fff;color-scheme:light}}
+:root[data-theme="dark"]{color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Mukta',system-ui,sans-serif;font-size:17px;line-height:1.5;min-height:100vh}
+h1,h2,h3{font-family:'Rozha One',Georgia,serif;font-weight:400;margin:0;line-height:1.1}
+button{font:inherit;cursor:pointer;border:0;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+.hide{display:none!important}
+.btn{background:var(--gold);color:var(--on-gold);font-weight:800;padding:14px 26px;border-radius:999px;font-size:1.05rem;transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.ghost{background:none;border:1.5px solid var(--line);padding:8px 16px;border-radius:999px;color:var(--mute);font-weight:600;font-size:.9rem}
+
+/* hero */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;overflow:hidden;
+ background:radial-gradient(circle at 50% 108%,var(--bg2) 0 38%,transparent 38.2%),var(--bg)}
+.rangoli{position:absolute;left:50%;bottom:-340px;width:760px;height:760px;transform:translateX(-50%);border-radius:50%;opacity:.55;pointer-events:none;
+ background:repeating-conic-gradient(from 0deg,var(--gold) 0 4deg,transparent 4deg 15deg),radial-gradient(circle,transparent 0 30%,var(--rose) 30% 31%,transparent 31% 44%,var(--teal) 44% 45%,transparent 45%);
+ -webkit-mask:radial-gradient(circle,transparent 0 22%,#000 23% 62%,transparent 63%);mask:radial-gradient(circle,transparent 0 22%,#000 23% 62%,transparent 63%);animation:spin 120s linear infinite}
+@keyframes spin{to{transform:translateX(-50%) rotate(360deg)}}
+.flame{width:34px;height:54px;margin:0 0 18px;background:radial-gradient(ellipse at 50% 75%,#fff7c2 0 18%,var(--gold) 45%,var(--rose) 80%);border-radius:50% 50% 50% 50%/65% 65% 35% 35%;box-shadow:0 0 50px 14px rgba(255,182,39,.45);animation:flick 1.8s ease-in-out infinite;transform-origin:50% 100%}
+@keyframes flick{0%,100%{transform:scale(1) rotate(-2deg)}50%{transform:scale(1.07,1.12) rotate(3deg)}}
+.hero h1{font-size:clamp(2.6rem,9vw,5.2rem);max-width:12ch}
+.hero p{max-width:46ch;color:var(--mute);font-size:1.15rem;margin:18px 0 30px}
+.hero .wrap{position:relative;z-index:1;padding-top:40px;padding-bottom:40px}
+
+/* top bar */
+.bar{display:flex;justify-content:space-between;align-items:center;padding:16px 0}
+.logo{font-family:'Rozha One',serif;font-size:1.2rem;display:flex;gap:10px;align-items:center}
+.logo i{width:12px;height:18px;border-radius:50% 50% 50% 50%/65% 65% 35% 35%;background:var(--gold);box-shadow:0 0 14px var(--gold);display:inline-block}
+
+/* catalog */
+.cat-head{padding:10px 0 22px}
+.cat-head h2{font-size:clamp(1.9rem,6vw,2.8rem)}
+.cat-head p{color:var(--mute);margin:8px 0 0}
+.group{margin:26px 0 8px;font-family:'Rozha One',serif;font-size:1.3rem;color:var(--gold)}
+.group small{font-family:'Mukta';font-size:.9rem;color:var(--mute);margin-left:8px}
+.row{display:grid;grid-template-columns:52px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px dashed var(--line)}
+.row .ic{font-size:2rem;text-align:center}
+.row b{display:block;font-weight:800}
+.row span{color:var(--mute);font-size:.9rem}
+.step{display:flex;align-items:center;gap:4px;background:var(--panel);border:1.5px solid var(--line);border-radius:999px;padding:4px}
+.step button{width:38px;height:38px;border-radius:50%;background:transparent;font-size:1.3rem;font-weight:800;color:var(--gold)}
+.step button:last-child{background:var(--gold);color:var(--on-gold)}
+.step output{min-width:30px;text-align:center;font-weight:800;font-size:1.1rem}
+.green{display:flex;gap:12px;align-items:center;margin:22px 0 0;padding:14px 16px;border:1.5px solid var(--teal);border-radius:16px;cursor:pointer}
+.green input{width:20px;height:20px;accent-color:var(--teal)}
+.green b{color:var(--teal)}
+.tray{position:sticky;bottom:0;z-index:5;margin-top:30px;padding:14px 0 calc(14px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,var(--bg) 22%)}
+.tray .in{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--panel);border:1.5px solid var(--gold);border-radius:22px;padding:12px 14px 12px 22px}
+.tray small{color:var(--mute);display:block;line-height:1.2}
+.tray strong{font-family:'Rozha One',serif;font-size:1.7rem;font-weight:400;color:var(--gold)}
+
+/* loading */
+.load{min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px}
+.load p{color:var(--mute);margin:0;max-width:34ch}
+
+/* report */
+.rep h2{font-size:clamp(2rem,7vw,3.4rem);max-width:16ch}
+.cost{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:26px 0;border:1.5px solid var(--line);border-radius:22px;overflow:hidden}
+.cost>div{padding:22px}
+.cost>div+div{background:var(--panel);border-left:1.5px dashed var(--line)}
+.cost small{color:var(--mute)}
+.big{font-family:'Rozha One',serif;font-size:clamp(1.9rem,6vw,2.9rem);line-height:1.05;margin-top:4px}
+.sec{margin:46px 0 14px}
+.sec h3{font-size:1.7rem}
+.sec p{color:var(--mute);margin:6px 0 0}
+.sec b{color:var(--gold)}
+.good{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1.5px solid var(--line)}
+.good>div{padding:20px 16px 20px 0}
+.good>div+div{padding-left:18px;border-left:1.5px solid var(--line)}
+.good .em{font-size:1.8rem}
+.good .big{font-size:2rem}
+.good span{color:var(--mute);font-size:.88rem;display:block;margin-top:6px}
+.lines div{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px dashed var(--line)}
+.lines div span{color:var(--mute)}
+.lines div b{text-align:right;font-weight:800}
+.split{display:grid;grid-template-columns:1fr 190px;gap:26px;align-items:center}
+.legend{display:grid;gap:10px}
+.legend div{display:flex;align-items:center;gap:10px}
+.legend i{width:14px;height:14px;border-radius:4px;flex:none}
+.legend b{margin-left:auto}
+.note{margin-top:22px;padding:16px 18px;border-left:4px solid var(--rose);background:var(--panel);border-radius:0 14px 14px 0}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin:40px 0 60px}
+@media (max-width:640px){
+ .good{grid-template-columns:1fr}.good>div+div{border-left:0;border-top:1.5px solid var(--line);padding-left:0}
+ .split{grid-template-columns:1fr}.cost>div{padding:16px}
+ .row{grid-template-columns:40px 1fr auto}
+}
+@media print{.actions,.bar{display:none}body{background:#fff}}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:50}
+.w{display:inline-block;animation:wd .9s cubic-bezier(.2,.9,.2,1) both;animation-delay:calc(var(--i)*.12s + .2s)}
+.hero p,.hero .btn{animation:wd 1s .9s cubic-bezier(.2,.9,.2,1) both}
+@keyframes wd{from{opacity:0;transform:translateY(.6em) rotate(4deg) scale(.9);filter:blur(8px)}}
+.pg{animation:pg .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes pg{from{opacity:0;transform:translateY(30px) scale(.98)}}
+.tick{margin-top:56px;overflow:hidden;white-space:nowrap;-webkit-mask:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent);mask:linear-gradient(90deg,transparent,#000 15%,#000 85%,transparent)}
+.tick div{display:inline-block;animation:mq 26s linear infinite;font-family:'Rozha One',serif;font-size:1.8rem;color:transparent;-webkit-text-stroke:1px var(--gold)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.rv{opacity:0;transform:translateY(34px) scale(.96);transition:opacity .7s,transform .7s cubic-bezier(.2,.9,.2,1)}
+.rv.in{opacity:1;transform:none}
+.pop{animation:pop .35s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pop{50%{transform:scale(1.7);color:var(--gold)}}
+#donut circle{transition:stroke-dasharray 1s cubic-bezier(.3,.8,.3,1)}
+.load .flame{transform:scale(1.6)}
+@media print{#fx{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<section id="s-hero" class="hero">
+  <div class="rangoli" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="flame" aria-hidden="true"></div>
+    <h1>Same budget, brighter Diwali</h1>
+    <p>Pick the fireworks you were planning to buy. We’ll show the smoke they make, and what that money could do for a school, a family or a wheelchair user instead.</p>
+    <button class="btn" onclick="show('s-cat')">Start my report</button>
+    <div class="tick" aria-hidden="true"><div></div></div>
+  </div>
+</section>
+
+<section id="s-cat" class="hide">
+  <div class="wrap">
+    <div class="bar"><div class="logo"><i></i>Diwali Impact</div><button class="ghost" onclick="resetAll()">Start over</button></div>
+    <div class="cat-head">
+      <h2>What’s in your bag?</h2>
+      <p>Add the fireworks you plan to light this Diwali.</p>
+    </div>
+    <div id="list"></div>
+    <label class="green">
+      <input type="checkbox" id="green" onchange="sync()">
+      <span><b>These are CSIR-NEERI green crackers</b><br><span style="color:var(--mute);font-size:.9rem">Cuts emissions by about 30%.</span></span>
+    </label>
+    <div class="tray"><div class="in">
+      <div><small><span id="n-items">0</span> items in your bag</small><strong id="n-price">₹0</strong></div>
+      <button class="btn" onclick="run()">See the impact</button>
+    </div></div>
+  </div>
+</section>
+
+<section id="s-load" class="hide">
+  <div class="load">
+    <div class="flame" aria-hidden="true"></div>
+    <h3 id="l-t">Burning the numbers…</h3>
+    <p id="l-s">Turning gunpowder into carbon dioxide and fine dust.</p>
+  </div>
+</section>
+
+<section id="s-rep" class="hide rep">
+  <div class="wrap">
+    <div class="bar"><div class="logo"><i></i>Diwali Impact</div></div>
+    <h2>Here’s what your fireworks leave behind</h2>
+    <div class="cost">
+      <div><small>You spend</small><div class="big" id="r-spend">₹0</div></div>
+      <div><small>The air takes</small><div class="big" id="r-co2" style="color:var(--rose)">0 kg</div><small>of CO₂</small></div>
+    </div>
+    <div class="lines">
+      <div><span>Neem trees needed for one year of recovery</span><b id="r-trees">0</b></div>
+      <div><span>Days for one neem tree to absorb it all</span><b id="r-days">0</b></div>
+    </div>
+
+    <div class="sec"><h3>Or that money could pay for</h3><p>From your <b id="r-budget">₹0</b> budget.</p></div>
+    <div class="good">
+      <div><div class="em">📚</div><div class="big" id="a-school" style="color:var(--teal)">0</div><b>months of schooling</b><span>For a child who can’t afford it, at ₹1,000 a month.</span></div>
+      <div><div class="em">♿</div><div class="big" id="a-chair" style="color:var(--sky)">0</div><b>wheelchairs</b><span>Manual chairs donated to people who need one, at ₹4,500 each.</span></div>
+      <div><div class="em">🍲</div><div class="big" id="a-kits" style="color:var(--gold)">0</div><b>meal and blanket kits</b><span>For families sleeping outside this winter, at ₹150 a kit.</span></div>
+    </div>
+
+    <div class="sec"><h3>Or that carbon could run</h3><p>The same CO₂, spent on something useful.</p></div>
+    <div class="good">
+      <div><div class="em">🏠</div><div class="big" id="e-home" style="color:var(--sky)">0</div><b>days of home power</b><span>For an average household using 6 kWh a day.</span></div>
+      <div><div class="em">🛵</div><div class="big" id="e-ev" style="color:var(--teal)">0</div><b>km on an e‑scooter</b><span>With no tailpipe at all.</span></div>
+      <div><div class="em">🔥</div><div class="big" id="e-lpg" style="color:var(--gold)">0</div><b>hours of cooking</b><span>On a household LPG burner.</span></div>
+    </div>
+
+    <div class="sec"><h3>What you breathe</h3></div>
+    <div class="lines">
+      <div><span>Fine dust (PM₂.₅)</span><b id="p-pm">0 g</b></div>
+      <div><span>Toxic gases (CO, SO₂, NOₓ)</span><b id="p-gas">0 g</b></div>
+      <div><span>Loudest item</span><b id="p-db">0 dB</b></div>
+      <div><span>Air purifier hours to clear the dust</span><b id="p-air">0 h</b></div>
+    </div>
+
+    <div class="sec"><h3>Where the smoke comes from</h3></div>
+    <div class="split">
+      <div class="legend" id="legend"></div>
+      <svg viewBox="0 0 36 36" width="190" height="190" role="img" aria-label="Emissions share by firework type" id="donut"></svg>
+    </div>
+    <div class="note">Burning fireworks isn’t the only way to celebrate. Diyas, rangoli and a donation in your family’s name still light up the night.</div>
+
+    <div class="actions">
+      <button class="btn" onclick="show('s-cat')">Change my bag</button>
+      <button class="ghost" onclick="window.print()">Print report</button>
+    </div>
+  </div>
+</section>
+
+<script>
+const D=[
+ {g:'Light',t:'Sparklers and fountains',s:'Quiet and low smoke',items:[
+  {id:'fuljhadi',n:'Fuljhadi (sparklers)',p:15,co2:.02,pm:1.5,db:40,i:'✨'},
+  {id:'anaar',n:'Anaar (flower pot)',p:80,co2:.15,pm:8,db:65,i:'🌋'},
+  {id:'chakri',n:'Zameen chakri (spinner)',p:40,co2:.08,pm:4.5,db:55,i:'🌀'},
+  {id:'pencil',n:'Colour pencil',p:25,co2:.04,pm:2,db:45,i:'✏️'}]},
+ {g:'Sky',t:'Rockets and shells',s:'Loud and high',items:[
+  {id:'rocket',n:'Whistling sky rocket',p:120,co2:.25,pm:12,db:95,i:'🚀'},
+  {id:'shell',n:'30-shot sky shell',p:650,co2:1.2,pm:45,db:105,i:'🎆'}]},
+ {g:'Sound',t:'Bombs and garlands',s:'The noisiest and dustiest',items:[
+  {id:'laxmi',n:'Laxmi bomb',p:30,co2:.1,pm:6,db:90,i:'💣'},
+  {id:'sutli',n:'Sutli bomb',p:60,co2:.4,pm:18,db:115,i:'💥'},
+  {id:'ladi',n:'1,000 ladi garland',p:850,co2:2.5,pm:90,db:125,i:'🎇'}]}
+];
+const ALL=D.flatMap(x=>x.items.map(i=>({...i,g:x.g})));
+const Q={};ALL.forEach(i=>Q[i.id]=0);
+const $=id=>document.getElementById(id);
+const inr=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const S=['s-hero','s-cat','s-load','s-rep'];
+function show(id){S.forEach(s=>{const e=$(s);e.classList.toggle('hide',s!==id);e.classList.remove('pg')});const t=$(id);void t.offsetWidth;t.classList.add('pg');window.scrollTo(0,0);
+ if(id==='s-load')[0,350,700,1100,1500].forEach(d=>setTimeout(()=>launch(),d));
+ if(id==='s-rep'){RV.forEach(e=>{e.classList.remove('in');io.observe(e)});[200,500,800,1200].forEach(d=>setTimeout(()=>launch(),d));setTimeout(()=>burst(W/2,H*.3,120,1.3),400)}}
+
+$('list').innerHTML=D.map(x=>`<div class="group">${x.t}<small>${x.s}</small></div>`+x.items.map(i=>`
+ <div class="row"><div class="ic">${i.i}</div><div><b>${i.n}</b><span>${inr(i.p)} each · ${i.db} dB</span></div>
+ <div class="step"><button aria-label="Remove one ${i.n}" onclick="chg('${i.id}',-1)">−</button><output id="q-${i.id}">0</output><button aria-label="Add one ${i.n}" onclick="chg('${i.id}',1)">+</button></div></div>`).join('')).join('');
+
+function chg(id,d){Q[id]=Math.max(0,Q[id]+d);const o=$('q-'+id);o.textContent=Q[id];o.classList.remove('pop');void o.offsetWidth;o.classList.add('pop');sync();
+ const b=typeof event!=='undefined'&&event.currentTarget;if(b&&d>0){const r=b.getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,26,.6)}}
+function sync(){let n=0,p=0;ALL.forEach(i=>{n+=Q[i.id];p+=Q[i.id]*i.p});$('n-items').textContent=n;$('n-price').textContent=inr(p)}
+
+function run(){
+ if(!ALL.some(i=>Q[i.id]>0)){alert('Add at least one firework to see your report.');return}
+ show('s-load');
+ const st=[['Burning the numbers…','Turning gunpowder into carbon dioxide and fine dust.'],['Counting what else it could buy…','Schools, wheelchairs and warm meals.'],['Asking a neem tree…','How long would it take to clean this up?']];
+ let k=0;const t=setInterval(()=>{k++;if(k<st.length){$('l-t').textContent=st[k][0];$('l-s').textContent=st[k][1]}else{clearInterval(t);report();show('s-rep')}},650);
+}
+
+function report(){
+ const f=$('green').checked?.7:1;
+ let sp=0,co=0,pm=0,db=0;const cat={Light:0,Sky:0,Sound:0};
+ ALL.forEach(i=>{const q=Q[i.id];if(!q)return;sp+=q*i.p;const c=q*i.co2*f;co+=c;pm+=q*i.pm*f;db=Math.max(db,i.db);cat[i.g]+=c});
+ const T=(id,v)=>{v=String(v);const el=$(id),m=v.match(/[\d,]*\.?\d+/);if(!m||RM){el.textContent=v;return}
+  const num=parseFloat(m[0].replace(/,/g,'')),dec=(m[0].split('.')[1]||'').length,pre=v.slice(0,m.index),suf=v.slice(m.index+m[0].length),cm=m[0].includes(',');
+  const f=n=>cm?n.toLocaleString('en-IN',{minimumFractionDigits:dec,maximumFractionDigits:dec}):n.toFixed(dec);
+  const t0=performance.now()+250,dur=1500;el.textContent=pre+f(0)+suf;
+  (function tick(now){const p=Math.min(1,Math.max(0,(now-t0)/dur)),e=1-Math.pow(1-p,3);el.textContent=pre+f(num*e)+suf;if(p<1)requestAnimationFrame(tick)})(performance.now())};
+ T('r-spend',inr(sp));T('r-budget',inr(sp));T('r-co2',co.toFixed(2)+' kg');
+ T('r-trees',(co/21.8).toFixed(2));T('r-days',Math.ceil(co/.0597).toLocaleString('en-IN'));
+ T('a-school',(sp/1000).toFixed(1));T('a-chair',(sp/4500).toFixed(1));T('a-kits',Math.floor(sp/150));
+ T('e-home',(co/(.82*6)).toFixed(1));T('e-ev',Math.round(co/.025).toLocaleString('en-IN'));T('e-lpg',((co/2.98)*3).toFixed(1));
+ T('p-pm',pm.toFixed(1)+' g');T('p-gas',Math.round(co*120).toLocaleString('en-IN')+' g');T('p-db',db+' dB');T('p-air',Math.ceil(pm/1.5)+' h');
+ const col={Light:'var(--gold)',Sky:'var(--sky)',Sound:'var(--rose)'},nm={Light:'Sparklers and fountains',Sky:'Rockets and shells',Sound:'Bombs and garlands'};
+ let off=25,svg='<circle cx="18" cy="18" r="15.9155" fill="none" stroke="var(--line)" stroke-width="5"/>',lg='';
+ Object.keys(cat).forEach(k=>{const p=co?cat[k]/co*100:0;
+  if(p>0){svg+=`<circle cx="18" cy="18" r="15.9155" fill="none" stroke="${col[k]}" stroke-width="5" stroke-dasharray="0 100" data-d="${p} ${100-p}" stroke-dashoffset="${off}"/>`;off-=p}
+  lg+=`<div><i style="background:${col[k]}"></i>${nm[k]}<b>${Math.round(p)}%</b></div>`});
+ $('donut').innerHTML=svg;$('legend').innerHTML=lg;
+ setTimeout(()=>document.querySelectorAll('#donut [data-d]').forEach((c,i)=>setTimeout(()=>c.setAttribute('stroke-dasharray',c.dataset.d),i*350)),1600);
+}
+
+/* motion engine */
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches,cv=$('fx'),cx=cv.getContext('2d'),DPR=Math.min(devicePixelRatio||1,2),COLS=['#ffb627','#ff5d8f','#2ed3b7','#7fb8ff','#fff1d6'];
+let P=[],R=[],W,H,on=false;
+function fit(){W=innerWidth;H=innerHeight;cv.width=W*DPR;cv.height=H*DPR;cx.setTransform(DPR,0,0,DPR,0,0)}
+fit();addEventListener('resize',fit);
+function go(){if(!on){on=true;requestAnimationFrame(loop)}}
+function burst(x,y,n=70,s=1){if(RM)return;const c=COLS[Math.random()*5|0],c2=COLS[Math.random()*5|0];
+ for(let i=0;i<n;i++){const a=Math.PI*2*i/n+Math.random()*.2,v=(1.5+Math.random()*3.2)*s;P.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,c:i%3?c:c2,r:1.5+Math.random()*1.5})}go()}
+function launch(){if(RM)return;R.push({x:W*(.15+Math.random()*.7),y:H,ty:H*(.15+Math.random()*.35),vy:-(8+Math.random()*3)});go()}
+function loop(){cx.clearRect(0,0,W,H);cx.globalAlpha=1;
+ R=R.filter(r=>{r.y+=r.vy;r.vy*=.985;cx.fillStyle='#fff1d6';cx.beginPath();cx.arc(r.x,r.y,2.2,0,7);cx.fill();
+  P.push({x:r.x,y:r.y,vx:(Math.random()-.5)*.4,vy:Math.random()*.6,l:.5,c:'#ffb627',r:1.2});
+  if(r.y<=r.ty||r.vy>-1.3){burst(r.x,r.y,80);return false}return true});
+ P=P.filter(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.05;p.vx*=.985;p.l-=.013;if(p.l<=0)return false;cx.globalAlpha=p.l;cx.fillStyle=p.c;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill();return true});
+ if(P.length||R.length)requestAnimationFrame(loop);else on=false}
+setInterval(()=>{if(!$('s-hero').classList.contains('hide')&&!document.hidden)launch()},1600);
+setTimeout(()=>{launch();setTimeout(launch,400)},700);
+$('s-hero').addEventListener('click',e=>{if(!e.target.closest('button'))burst(e.clientX,e.clientY,90)});
+document.querySelectorAll('.hero h1').forEach(h=>{h.innerHTML=h.textContent.split(' ').map((w,i)=>`<span class="w" style="--i:${i}">${w}</span>`).join(' ')});
+document.querySelector('.tick div').textContent='Light 🪔 Love 🪔 Awareness 🪔 '.repeat(8);
+const RV=[...document.querySelectorAll('#s-rep .cost>div,#s-rep .sec,#s-rep .good>div,#s-rep .lines div,#s-rep .split,#s-rep .note')];
+RV.forEach(e=>{e.classList.add('rv');e.style.transitionDelay=[...e.parentNode.children].indexOf(e)*.12+'s'});
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.15});
+function resetAll(){ALL.forEach(i=>{Q[i.id]=0;$('q-'+i.id).textContent=0});$('green').checked=false;sync();show('s-hero')}
+</script>
+</body>
+</html>
